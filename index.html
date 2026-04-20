@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ADMS Railway Management</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <h1>🚂 ADMS Railway Management</h1>
+    </header>
+
+    <div class="container">
+        <div class="box">
+            <h3>Add New Schedule</h3>
+            <form id="railForm">
+                <div class="input-group">
+                    <label>Train Name</label>
+                    <input type="text" id="name" placeholder="Enter train name" required>
+                </div>
+                <div class="input-group">
+                    <label>Route</label>
+                    <input type="text" id="route" placeholder="e.g. Dhaka-CTG" required>
+                </div>
+                <div class="input-group">
+                    <label>Departure Time</label>
+                    <input type="time" id="time" required>
+                </div>
+                <button type="submit" id="saveBtn">Save Schedule</button>
+            </form>
+        </div>
+
+        <div class="box">
+            <h3>Live Schedules</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Train Name</th>
+                        <th>Route</th>
+                        <th>Time (12h)</th>
+                    </tr>
+                </thead>
+                <tbody id="list">
+                    </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
