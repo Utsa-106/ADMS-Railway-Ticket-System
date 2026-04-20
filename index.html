@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ADMS Railway Ticket System</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>🚂 ADMS Railway Ticket System</h1>
+        <button onclick="openAdmin()" class="admin-login-btn">Admin Access</button>
+    </header>
+
+    <div class="container">
+        <section class="seat-selection">
+            <h3>Select Your Seats (Max 4)</h3>
+            <div class="coach-label">AC COACH (1000 TK)</div>
+            <div id="ac-grid" class="seat-grid"></div>
+
+            <div class="coach-label">NON-AC COACH (500 TK)</div>
+            <div id="non-ac-grid" class="seat-grid"></div>
+
+            <div class="user-records">
+                <h4>📜 Your Recent Bookings</h4>
+                <div id="user-history" class="history-list">
+                    <p style="font-size: 12px; color: #888;">No recent bookings found.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="booking-panel">
+            <h3>Passenger Details</h3>
+            <form id="ticket-form">
+                <input type="text" id="p-name" placeholder="Passenger Name" required>
+                <select id="p-train" required>
+                    <option value="">Select Route & Time</option>
+                    <option value="Suborno Express | Dhaka -> Ctg | 07:00 AM">Suborno Express | Dhaka -> Ctg | 07:00 AM</option>
+                    <option value="Sonar Bangla | Ctg -> Dhaka | 05:00 PM">Sonar Bangla | Ctg -> Dhaka | 05:00 PM</option>
+                    <option value="Parabat | Dhaka -> Sylhet | 06:30 AM">Parabat | Dhaka -> Sylhet | 06:30 AM</option>
+                </select>
+
+                <div class="summary-box">
+                    <p>Selected: <span id="display-seats" class="highlight">None</span></p>
+                    <p>Total: <span id="display-price" class="highlight">0</span> TK</p>
+                </div>
+                <button type="submit" class="confirm-btn">Confirm Booking</button>
+            </form>
+        </section>
+    </div>
+
+    <div id="admin-panel" class="admin-modal" style="display:none;">
+        <div class="admin-content">
+            <div class="admin-header">
+                <h3>🛡️ Admin Dashboard (Database Records)</h3>
+                <button onclick="closeAdmin()" class="close-admin-btn">&times;</button>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Passenger</th>
+                            <th>Route</th>
+                            <th>Seats</th>
+                            <th>Fare</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="ticket-modal" class="modal">
+        <div class="modal-content">
+            <div class="ticket-header">OFFICIAL E-TICKET</div>
+            <div class="ticket-body">
+                <p><strong>Passenger:</strong> <span id="t-name"></span></p>
+                <p><strong>Journey:</strong> <span id="t-train"></span></p>
+                <p><strong>Seats:</strong> <span id="t-seats"></span></p>
+                <p><strong>Total Fare:</strong> <span id="t-fare"></span> TK</p>
+                <div class="stamp">PAID & CONFIRMED</div>
+            </div>
+            <button onclick="closeTicket()" class="close-btn">Done</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
