@@ -1,35 +1,89 @@
-// Function to handle form submission
-document.getElementById('railForm').addEventListener('submit', function(e) {
-    // Prevent the page from reloading
+let totalRevenue = 0;
+let totalTickets = 0;
+let selectedSeats = [];
+
+// Generate AC Seats (1-8)
+const acGrid = document.getElementById('ac-grid');
+for (let i = 1; i <= 8; i++) createSeat(acGrid, i, "AC-", 1000);
+
+// Generate Non-AC Seats (9-16)
+const nonAcGrid = document.getElementById('non-ac-grid');
+for (let i = 9; i <= 16; i++) createSeat(nonAcGrid, i, "N-", 500);
+
+function createSeat(container, num, prefix, price) {
+    let seat = document.createElement('div');
+    seat.className = 'seat-box';
+    seat.innerText = prefix + num;
+    
+    seat.onclick = () => {
+        if (seat.classList.contains('booked')) return;
+        
+        if (seat.classList.contains('selected')) {
+            seat.classList.remove('selected');
+            selectedSeats = selectedSeats.filter(s => s.id !== prefix + num);
+        } else if (selectedSeats.length < 4) {
+            seat.classList.add('selected');
+            selectedSeats.push({ id: prefix + num, fare: price });
+        } else {
+            alert("Maximum limit: 4 seats per booking.");
+        }
+        updateUI();
+    };
+    container.appendChild(seat);
+}
+
+function updateUI() {
+    let total = selectedSeats.reduce((sum, s) => sum + s.fare, 0);
+    document.getElementById('display-seats').innerText = selectedSeats.map(s => s.id).join(', ') || "None";
+    document.getElementById('display-price').innerText = total;
+}
+
+document.getElementById('ticket-form').onsubmit = function(e) {
     e.preventDefault();
+    if (selectedSeats.length === 0) return alert("Please select at least one seat.");
 
-    // Get input values from the form
-    const trainName = document.getElementById('name').value;
-    const trainRoute = document.getElementById('route').value;
-    const rawTime = document.getElementById('time').value;
+    let name = document.getElementById('p-name').value;
+    let journey = document.getElementById('p-train').value;
+    let fare = document.getElementById('display-price').innerText;
+    let seats = document.getElementById('display-seats').innerText;
 
-    // Convert 24-hour time to 12-hour AM/PM format using built-in function
-    // This makes the time display 
-    const timeObject = new Date('2026-01-01T' + rawTime);
-    const finalTime = timeObject.toLocaleString('en-US', { 
-        hour: 'numeric', 
-        minute: 'numeric', 
-        hour12: true 
+    // 1. Show Digital Ticket to Passenger
+    document.getElementById('t-name').innerText = name;
+    document.getElementById('t-train').innerText = journey;
+    document.getElementById('t-seats').innerText = seats;
+    document.getElementById('t-fare').innerText = fare;
+    document.getElementById('ticket-modal').style.display = "flex";
+
+    // 2. Add to Admin Records
+    document.getElementById('table-body').innerHTML += `<tr>
+        <td>${name}</td><td>${journey}</td><td>${seats}</td><td>${fare} TK</td>
+        <td><button class="del-btn" onclick="cancelBooking(this, ${fare}, ${selectedSeats.length})">Cancel</button></td>
+    </tr>`;
+
+    // 3. Mark seats as Booked
+    document.querySelectorAll('.seat-box.selected').forEach(s => {
+        s.classList.remove('selected');
+        s.classList.add('booked');
     });
 
-    // Create a new table row for the data
-    const tableBody = document.getElementById('list');
-    const row = `
-        <tr>
-            <td>${trainName}</td>
-            <td>${trainRoute}</td>
-            <td>${finalTime}</td>
-        </tr>
-    `;
+    // 4. Update Admin Stats
+    totalRevenue += parseInt(fare);
+    totalTickets += selectedSeats.length;
+    document.getElementById('rev').innerText = totalRevenue;
+    document.getElementById('sold').innerText = totalTickets;
 
-    // Add the new row to the table
-    tableBody.innerHTML += row;
-
-    // Reset the form fields for next entry
+    selectedSeats = [];
+    updateUI();
     this.reset();
-});
+};
+
+function cancelBooking(btn, amount, count) {
+    btn.parentElement.parentElement.remove();
+    totalRevenue -= amount;
+    totalTickets -= count;
+    document.getElementById('rev').innerText = totalRevenue;
+    document.getElementById('sold').innerText = totalTickets;
+}
+
+function closeTicket() { document.getElementById('ticket-modal').style.display = "none"; }
+function openAdmin() { if (prompt("Admin Password:") === "123") document.getElementById('admin-panel').style.display = "block"; }
