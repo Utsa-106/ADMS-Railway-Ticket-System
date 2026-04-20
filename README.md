@@ -18,5 +18,5 @@ A modern, responsive frontend project for a Railway Ticketing System developed a
 * `index.html` - The main interface.
 * `style.css` - Custom styling and animations.
 * `script.js` - Core logic and functionality.
-* `/v2` - Updated version with Route and Time management.
+
 
