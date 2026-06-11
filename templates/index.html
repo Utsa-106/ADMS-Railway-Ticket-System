@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Railway-Ticket-System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header class="topbar">
+        <div>
+            <span class="brand-mark">BR</span>
+            <span class="brand-title">Bangladesh Railway</span>
+        </div>
+        <span class="support-text">Online Ticketing Demo</span>
+    </header>
+
+    <main class="page-shell">
+        <section class="hero-panel">
+            <div class="section-heading">
+                <p>Official Style Ticketing</p>
+                <h1>Railway booking made easy for everyone</h1>
+            </div>
+            <div class="hero-stats">
+                <span>Intercity Trains</span>
+                <span>Secure Payment</span>
+                <span>E-Ticket PDF</span>
+            </div>
+        </section>
+
+        <section class="booking-panel search-panel">
+            <div class="section-heading">
+                <p>Train Ticket</p>
+                <h1>Search Your Train</h1>
+            </div>
+
+            {% if error %}
+                <p class="error-message">{{ error }}</p>
+            {% endif %}
+
+            <form action="/seat-selection" method="POST" class="booking-form">
+                <div class="form-grid">
+                    <label>
+                        From
+                        <select name="from" required>
+                            {% for station in stations %}
+                                <option value="{{ station }}">{{ station }}</option>
+                            {% endfor %}
+                        </select>
+                    </label>
+
+                    <label>
+                        To
+                        <select name="to" required>
+                            {% for station in stations %}
+                                <option value="{{ station }}">{{ station }}</option>
+                            {% endfor %}
+                        </select>
+                    </label>
+
+                    <label>
+                        Date of Journey
+                        <input type="date" name="journeyDate" required>
+                    </label>
+
+                    <label>
+                        Choose Class
+                        <select name="class" required>
+                            {% for train_class in classes %}
+                                <option value="{{ train_class }}">{{ train_class }}</option>
+                            {% endfor %}
+                        </select>
+                    </label>
+
+                    <label class="wide-field">
+                        Mobile Number
+                        <input type="text" name="phone" placeholder="01XXXXXXXXX" required>
+                    </label>
+                </div>
+
+                <button type="submit">Search Trains</button>
+            </form>
+        </section>
+
+        <section class="booking-panel advisor-panel">
+            <div class="advisor-layout">
+                <div>
+                    <div class="section-heading">
+                        <p>স্মার্ট যাত্রা পরিকল্পনা</p>
+                        <h1>টিকিট বুক করার আগে যাত্রার চাপ দেখে নিন।</h1>
+                    </div>
+
+                    <p class="feature-copy">
+                        রুট, তারিখ এবং ক্লাস নির্বাচন করলে সিস্টেম ওই রুটের যাত্রীর চাপ,
+                        বিলম্বের ঝুঁকি এবং যাত্রীর জন্য প্রয়োজনীয় পরামর্শ দেখাবে।
+                        যাত্রীর চাপ বেশি হলে আগে টিকিট বুক করার পরামর্শ দেবে,
+                        আর বিলম্বের ঝুঁকি থাকলে স্টেশনে আগে যাওয়ার পরামর্শ দেবে।
+                    </p>
+                </div>
+
+                <div>
+                    <form action="/smart-trip-advisor" method="POST" class="advisor-form">
+                        <label>
+                            From
+                            <select name="advisor_from" required>
+                                {% for station in stations %}
+                                    <option value="{{ station }}">{{ station }}</option>
+                                {% endfor %}
+                            </select>
+                        </label>
+
+                        <label>
+                            To
+                            <select name="advisor_to" required>
+                                {% for station in stations %}
+                                    <option value="{{ station }}">{{ station }}</option>
+                                {% endfor %}
+                            </select>
+                        </label>
+
+                        <label>
+                            Journey Date
+                            <input type="date" name="advisor_date" required>
+                        </label>
+
+                        <label>
+                            Class
+                            <select name="advisor_class" required>
+                                {% for train_class in classes %}
+                                    <option value="{{ train_class }}">{{ train_class }}</option>
+                                {% endfor %}
+                            </select>
+                        </label>
+
+                        <button type="submit">Check Trip</button>
+                    </form>
+                </div>
+            </div>
+
+            {% if advisor_result %}
+                <div class="advisor-result">
+                    <h2>{{ advisor_result.route }}</h2>
+                    <p><strong>{{ advisor_result.day }}</strong> | {{ advisor_result.date }} | {{ advisor_result.class }}</p>
+                    <div class="advisor-metrics">
+                        <span>যাত্রীর চাপ: <strong>{{ advisor_result.crowd }}</strong></span>
+                        <span>বিলম্বের ঝুঁকি: <strong>{{ advisor_result.delay }}</strong></span>
+                    </div>
+                    <p>
+                        <strong>পরামর্শ:</strong>
+                        {% if advisor_result.crowd == "High" %}
+                            এই রুটে যাত্রীর চাপ বেশি হতে পারে, তাই আগে টিকিট বুক করা ভালো।
+                        {% elif advisor_result.delay == "Medium" or advisor_result.delay == "High" %}
+                            এই রুটে কিছুটা বিলম্ব হতে পারে, তাই স্টেশনে একটু আগে পৌঁছানো ভালো।
+                        {% else %}
+                            এই রুটে যাত্রীর চাপ কম হতে পারে, তবুও আগে টিকিট বুক করা ভালো।
+                        {% endif %}
+                    </p>
+                </div>
+            {% endif %}
+        </section>
+    </main>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Details</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header class="topbar">
+        <div>
+            <span class="brand-mark">BR</span>
+            <span class="brand-title">Bangladesh Railway</span>
+        </div>
+        <a href="/" class="nav-link">New Search</a>
+    </header>
+
+    <main class="page-shell two-column">
+        <section class="booking-panel">
+            <div class="section-heading">
+                <p>Secure Payment</p>
+                <h1>Pay for Your Ticket</h1>
+            </div>
+            <div class="step-row">
+                <span class="step done">Search</span>
+                <span class="step done">Seat</span>
+                <span class="step active">Payment</span>
+                <span class="step">Ticket</span>
+            </div>
+
+            {% if success %}
+                <div class="success-message">
+                    Payment request submitted successfully. Your ticket is being processed.
+                </div>
+            {% else %}
+                <form action="/payment-details" method="POST">
+                    <label>
+                        Payment Method
+                        <select name="payment_method" required>
+                            <option value="bkash">bKash</option>
+                            <option value="nagad">Nagad</option>
+                            <option value="rocket">Rocket</option>
+                            <option value="card">Card</option>
+                        </select>
+                    </label>
+
+                    <label>
+                        Account / Card Number
+                        <input type="text" name="payment_number" placeholder="Enter payment number" required>
+                    </label>
+
+                    <button type="submit">Pay BDT {{ booking.total }}</button>
+                </form>
+            {% endif %}
+        </section>
+
+        <aside class="summary-panel">
+            <h2>Ticket Summary</h2>
+            <p><strong>Train:</strong> {{ booking.train }}</p>
+            <p><strong>Route:</strong> {{ booking.from_station }} to {{ booking.to_station }}</p>
+            <p><strong>Date:</strong> {{ booking.journey_date }}</p>
+            <p><strong>Class:</strong> {{ booking.train_class }}</p>
+            <p><strong>Passenger:</strong> {{ booking.passenger_name }}</p>
+            <p><strong>Seats:</strong> {{ booking.seats | join(', ') }}</p>
+            <hr>
+            <p><strong>Fare:</strong> BDT {{ booking.fare }}</p>
+            <p><strong>Service Charge:</strong> BDT {{ booking.service_charge }}</p>
+            <p class="total-line"><strong>Total:</strong> BDT {{ booking.total }}</p>
+        </aside>
+    </main>
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Railway Ticket</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body class="ticket-body">
+    <div class="ticket-actions">
+        <a href="/" class="secondary-button">New Search</a>
+        <button type="button" onclick="window.print()">Download / Print PDF</button>
+    </div>
+
+    <main class="ticket-page">
+        <header class="ticket-header">
+            <div>
+                <span class="brand-mark">BR</span>
+                <strong>Bangladesh Railway</strong>
+                <p>Online E-Ticket</p>
+            </div>
+            <div class="ticket-status">PAID</div>
+        </header>
+
+        <section class="ticket-main">
+            <div>
+                <p class="label-text">Passenger</p>
+                <h1>{{ booking.passenger_name }}</h1>
+                <p>NID / Birth Reg: {{ booking.nid }}</p>
+                <p>Mobile: {{ booking.phone }}</p>
+            </div>
+            <div class="qr-box">
+                <span>{{ booking.transaction_id }}</span>
+            </div>
+        </section>
+
+        <section class="ticket-grid">
+            <div>
+                <span>Train</span>
+                <strong>{{ booking.train }}</strong>
+            </div>
+            <div>
+                <span>Journey Date</span>
+                <strong>{{ booking.journey_date }}</strong>
+            </div>
+            <div>
+                <span>From</span>
+                <strong>{{ booking.from_station }}</strong>
+            </div>
+            <div>
+                <span>To</span>
+                <strong>{{ booking.to_station }}</strong>
+            </div>
+            <div>
+                <span>Class</span>
+                <strong>{{ booking.train_class }}</strong>
+            </div>
+            <div>
+                <span>Seat(s)</span>
+                <strong>{{ booking.seats | join(', ') }}</strong>
+            </div>
+            <div>
+                <span>Issue Time</span>
+                <strong>{{ booking.issued_at }}</strong>
+            </div>
+            <div>
+                <span>Transaction ID</span>
+                <strong>{{ booking.transaction_id }}</strong>
+            </div>
+        </section>
+
+        <section class="fare-table">
+            <div>
+                <span>Fare</span>
+                <strong>BDT {{ booking.fare }}</strong>
+            </div>
+            <div>
+                <span>Service Charge</span>
+                <strong>BDT {{ booking.service_charge }}</strong>
+            </div>
+            <div class="grand-total">
+                <span>Total Paid</span>
+                <strong>BDT {{ booking.total }}</strong>
+            </div>
+        </section>
+
+        <footer class="ticket-footer">
+            <p>This is a computer generated demo ticket for the academic project.</p>
+            <p>Please carry NID/Birth Registration during travel.</p>
+        </footer>
+    </main>
+</body>
+</html>

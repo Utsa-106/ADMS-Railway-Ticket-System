@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seat Selection</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header class="topbar">
+        <div>
+            <span class="brand-mark">BR</span>
+            <span class="brand-title">Bangladesh Railway</span>
+        </div>
+        <a href="/" class="nav-link">New Search</a>
+    </header>
+
+    <main class="page-shell two-column">
+        <section class="booking-panel">
+            <div class="section-heading">
+                <p>{{ booking.from_station }} to {{ booking.to_station }}</p>
+                <h1>Select Train & Seat</h1>
+            </div>
+            <div class="step-row">
+                <span class="step done">Search</span>
+                <span class="step active">Seat</span>
+                <span class="step">Payment</span>
+                <span class="step">Ticket</span>
+            </div>
+
+            <form action="/otp-verification" method="POST" id="bookingForm">
+                <div class="train-list">
+                    {% for train in trains %}
+                        <label class="train-card">
+                            <input type="radio" name="train" value="{{ train.number }} - {{ train.name }}" required {% if loop.first %}checked{% endif %}>
+                            <span>
+                                <strong>{{ train.name }}</strong>
+                                <small>{{ train.number }} | {{ train.departure }} - {{ train.arrival }}</small>
+                            </span>
+                            <b>BDT {{ fare }}</b>
+                        </label>
+                    {% endfor %}
+                </div>
+
+                <h2>Available Seats</h2>
+                <p class="hint-text">You can select maximum 4 seats in one booking.</p>
+                <input type="hidden" name="selected_seats" id="selectedSeats">
+                <div class="coach-grid">
+                    {% for coach in coaches %}
+                        <div class="coach-card">
+                            <h3>Coach {{ coach.name }}</h3>
+                            <div class="coach-seat-grid">
+                                {% for seat in coach.seats %}
+                                    <button
+                                        type="button"
+                                        class="seat {% if seat in booked_seats %}booked{% endif %}"
+                                        data-seat="{{ seat }}"
+                                        {% if seat in booked_seats %}disabled{% endif %}
+                                    >
+                                        {{ seat.split("-")[1] }}
+                                    </button>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="seat-legend">
+                    <span><i class="legend available"></i>Available</span>
+                    <span><i class="legend selected"></i>Selected</span>
+                    <span><i class="legend booked"></i>Booked</span>
+                </div>
+
+                <div class="form-grid compact-form">
+                    <label>
+                        Passenger Name
+                        <input type="text" name="passenger_name" required>
+                    </label>
+                    <label>
+                        NID / Birth Reg.
+                        <input type="text" name="nid" required>
+                    </label>
+                    <label>
+                        Email
+                        <input type="text" name="email" placeholder="Optional">
+                    </label>
+                    <label>
+                        OTP
+                        <input type="text" name="otp" placeholder="Demo OTP: 1234" required>
+                    </label>
+                </div>
+
+                <button type="submit">Continue to Payment</button>
+            </form>
+        </section>
+
+        <aside class="summary-panel">
+            <h2>Journey Summary</h2>
+            <p><strong>Date:</strong> {{ booking.journey_date }}</p>
+            <p><strong>Class:</strong> {{ booking.train_class }}</p>
+            <p><strong>Mobile:</strong> {{ booking.phone }}</p>
+            <p><strong>Selected Seats:</strong> <span id="seatPreview">None</span></p>
+            <p><strong>Fare / Seat:</strong> BDT {{ fare }}</p>
+        </aside>
+    </main>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
